@@ -205,6 +205,11 @@ class Enemy extends SpriteAnimationGroupComponent<EnemyAnimation>
           to: idle,
           guard: (_) => retreat.finished,
         ),
+        StateTransition(
+          match: .exact(retreat),
+          to: chase,
+          guard: (_) => health > 50,
+        ),
       ],
     );
 
