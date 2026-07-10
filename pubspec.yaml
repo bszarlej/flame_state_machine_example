@@ -9,8 +9,7 @@ environment:
 dependencies:
   flame: ^1.37.0
   flame_camera_tools: ^5.0.2
-  flame_state_machine:
-    path: ../flame_state_machine
+  flame_state_machine: ^3.0.0
   flutter:
     sdk: flutter
 
