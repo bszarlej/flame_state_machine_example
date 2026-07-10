@@ -5,6 +5,7 @@ import 'package:flame/particles.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_state_machine/flame_state_machine.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_state_machine_example/direction.dart';
 import 'package:flutter_state_machine_example/enemy/states/chase_state.dart';
 import 'package:flutter_state_machine_example/enemy/states/combat_state.dart';
 import 'package:flutter_state_machine_example/enemy/states/dead_state.dart';
@@ -78,7 +79,7 @@ enum EnemyAnimation {
   const EnemyAnimation(this.action, this.direction, {this.isAttacking = false});
 
   final EnemyAction action;
-  final AxisDirection direction;
+  final Direction direction;
   final bool isAttacking;
 
   bool get isMoving => action == .walk || action == .run;

@@ -1,11 +1,11 @@
 import 'package:flame/components.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_state_machine_example/direction.dart';
 
 mixin TopDownMovement on PositionComponent {
   double moveSpeed = 100;
   final Vector2 velocity = Vector2.zero();
 
-  AxisDirection facing = AxisDirection.down;
+  Direction facing = Direction.down;
 
   void move(Vector2 direction) {
     if (direction.isZero()) {
@@ -28,15 +28,15 @@ mixin TopDownMovement on PositionComponent {
   void _updateFacing(Vector2 direction) {
     if (direction.x.abs() > direction.y.abs()) {
       facing = direction.x > 0
-          ? AxisDirection.right
+          ? Direction.right
           : direction.x < 0
-          ? AxisDirection.left
+          ? Direction.left
           : facing;
     } else {
       facing = direction.y > 0
-          ? AxisDirection.down
+          ? Direction.down
           : direction.y < 0
-          ? AxisDirection.up
+          ? Direction.up
           : facing;
     }
   }

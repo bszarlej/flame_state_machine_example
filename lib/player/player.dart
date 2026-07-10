@@ -2,35 +2,23 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_state_machine_example/game.dart';
 import 'package:flutter_state_machine_example/mixins/y_priority.dart';
 
-enum PlayerAction { idle, move, attack, dead }
-
-enum PlayerAnimation {
-  idleDown(.idle, .down),
-  idleUp(.idle, .up),
-  idleLeft(.idle, .left),
-  idleRight(.idle, .right),
-  moveDown(.move, .down),
-  moveUp(.move, .up),
-  moveLeft(.move, .left),
-  moveRight(.move, .right),
-  attackDown(.attack, .down),
-  attackUp(.attack, .up),
-  attackLeft(.attack, .left),
-  attackRight(.attack, .right),
-  deadLeft(.dead, .left),
-  deadRight(.dead, .right);
-
-  const PlayerAnimation(this.action, this.direction);
-
-  final PlayerAction action;
-  final AxisDirection direction;
+enum PlayerState {
+  idleSide,
+  idleDown,
+  idleUp,
+  moveDown,
+  moveUp,
+  moveSide,
+  attackDown,
+  attackUp,
+  attackSide,
+  dead,
 }
 
-class Player extends SpriteAnimationGroupComponent<PlayerAnimation>
+class Player extends SpriteAnimationGroupComponent<PlayerState>
     with
         HasGameReference<FlameStateMachineExample>,
         KeyboardHandler,
@@ -68,25 +56,19 @@ class Player extends SpriteAnimationGroupComponent<PlayerAnimation>
 
   Future<void> _initializeAnimations() async {
     final image = await game.images.load(_spritePath);
-
     final sheet = SpriteSheet(image: image, srcSize: _textureSize);
 
     animations = {
       .idleDown: sheet.createAnimation(row: 0, stepTime: 0.2, to: 6),
-      .idleRight: sheet.createAnimation(row: 1, stepTime: 0.2, to: 6),
+      .idleSide: sheet.createAnimation(row: 1, stepTime: 0.2, to: 6),
       .idleUp: sheet.createAnimation(row: 2, stepTime: 0.2, to: 6),
       .moveDown: sheet.createAnimation(row: 3, stepTime: 0.1, to: 6),
-      .moveRight: sheet.createAnimation(row: 4, stepTime: 0.1, to: 6),
+      .moveSide: sheet.createAnimation(row: 4, stepTime: 0.1, to: 6),
       .moveUp: sheet.createAnimation(row: 5, stepTime: 0.1, to: 6),
       .attackDown: sheet.createAnimation(row: 6, stepTime: 0.1, to: 4),
-      .attackRight: sheet.createAnimation(row: 7, stepTime: 0.1, to: 4),
+      .attackSide: sheet.createAnimation(row: 7, stepTime: 0.1, to: 4),
       .attackUp: sheet.createAnimation(row: 8, stepTime: 0.1, to: 4),
-      .deadRight: sheet.createAnimation(
-        row: 9,
-        stepTime: 0.1,
-        to: 3,
-        loop: false,
-      ),
+      .dead: sheet.createAnimation(row: 9, stepTime: 0.1, to: 3, loop: false),
     };
 
     current = .idleDown;
@@ -109,6 +91,31 @@ class Player extends SpriteAnimationGroupComponent<PlayerAnimation>
 
     if (_keys.contains(LogicalKeyboardKey.shiftLeft)) {
       boost = 2.0;
+    }
+
+    if (!_moveDirection.isZero()) {
+      _moveDirection.normalize();
+      position.add(_moveDirection * _moveSpeed * boost * dt);
+
+      _facingDirection.setFrom(_moveDirection);
+
+      if (_moveDirection.y < 0) {
+        current = PlayerState.moveUp;
+      } else if (_moveDirection.y > 0) {
+        current = PlayerState.moveDown;
+      } else {
+        current = PlayerState.moveSide;
+        scale.x = _moveDirection.x < 0 ? -1 : 1;
+      }
+    } else {
+      if (_facingDirection.y < 0) {
+        current = PlayerState.idleUp;
+      } else if (_facingDirection.y > 0) {
+        current = PlayerState.idleDown;
+      } else {
+        current = PlayerState.idleSide;
+        scale.x = _facingDirection.x < 0 ? -1 : 1;
+      }
     }
   }
 }
