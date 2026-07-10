@@ -37,3 +37,13 @@ flutter run
 | --- | --- |
 | W / A / S / D | Move player |
 | Shift | Sprint |
+
+### Learn More
+
+The state machine implementation used in this example is provided by:
+
+https://pub.dev/packages/flame_state_machine
+
+The package repository:
+
+https://github.com/bszarlej/flame_state_machine
