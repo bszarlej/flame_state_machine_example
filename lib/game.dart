@@ -17,10 +17,12 @@ class FlameStateMachineExample extends FlameGame
 
   @override
   Future<void> onLoad() async {
-    debugMode = true;
+    debugMode = false;
 
     final world = World();
     final camera = CameraComponent(world: world);
+
+    camera.viewfinder.zoom = 1.5;
 
     await add(world);
     await add(camera);
