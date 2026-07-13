@@ -17,8 +17,8 @@ import 'package:flutter_state_machine_example/mixins/top_down_movement.dart';
 import 'package:flutter_state_machine_example/mixins/y_priority.dart';
 
 enum EnemyAction {
-  idle(4, stepTime: 0.2, loop: true),
-  walk(6, stepTime: 0.25, loop: true),
+  idle(4, stepTime: 0.22, loop: true),
+  walk(6, stepTime: 0.2, loop: true),
   run(8, stepTime: 0.1, loop: true),
   attack(8, stepTime: 0.1, loop: true),
   hurt(6, stepTime: 0.1, loop: true),
