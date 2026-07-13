@@ -17,7 +17,7 @@ class FlameStateMachineExample extends FlameGame
 
   @override
   Future<void> onLoad() async {
-    debugMode = false;
+    debugMode = true;
 
     final world = World();
     final camera = CameraComponent(world: world);
