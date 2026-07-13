@@ -105,8 +105,11 @@ class Enemy extends SpriteAnimationGroupComponent<EnemyAnimation>
 
   double get distanceToPlayer => (game.player.position - position).length;
 
-  bool get seesPlayer => distanceToPlayer <= 75;
+  bool get seesPlayer => distanceToPlayer <= 150;
 
+  bool get canAttack => distanceToPlayer <= attackRange;
+
+  double attackRange = 30;
   double maxHealth = 100;
   double health = 100;
 
@@ -176,29 +179,28 @@ class Enemy extends SpriteAnimationGroupComponent<EnemyAnimation>
         StateTransition(
           match: .anyOf([idle, patrol]),
           to: chase,
-          guard: (_) => distanceToPlayer <= 150,
+          guard: (_) => seesPlayer,
         ),
         StateTransition(
           match: .exact(chase),
           to: idle,
-          guard: (_) => distanceToPlayer > 150,
+          guard: (_) => !seesPlayer,
         ),
         StateTransition(
           match: .exact(chase),
           to: combat,
-          guard: (_) => distanceToPlayer <= 30,
+          guard: (_) => canAttack,
         ),
         StateTransition(
           match: .exact(combat),
           to: chase,
-          guard: (_) => distanceToPlayer > 30,
+          guard: (_) => !canAttack,
         ),
         StateTransition(
           priority: 10,
           match: .anyOf([idle, patrol, chase, combat]),
           to: retreat,
-          guard: (_) =>
-              health <= 30 && distanceToPlayer <= 150 && retreatWhenLow,
+          guard: (_) => health <= 30 && seesPlayer && retreatWhenLow,
         ),
         StateTransition(
           match: .exact(retreat),
@@ -208,7 +210,7 @@ class Enemy extends SpriteAnimationGroupComponent<EnemyAnimation>
         StateTransition(
           match: .exact(retreat),
           to: chase,
-          guard: (_) => health > 50,
+          guard: (_) => health > 50 && seesPlayer,
         ),
       ],
     );

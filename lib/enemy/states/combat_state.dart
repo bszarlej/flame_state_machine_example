@@ -55,7 +55,7 @@ final class CombatState extends EnemyState {
 
     canvas.drawCircle(
       owner.parentToLocal(owner.position).toOffset(),
-      30,
+      owner.attackRange,
       paint,
     );
   }
